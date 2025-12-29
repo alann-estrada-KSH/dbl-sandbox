@@ -1,0 +1,11 @@
+container_name: dbl_demo_pg
+db_name: myapp
+engine: postgres
+host: localhost
+ignore_tables:
+  - failed_jobs
+  - migrations
+  - cache
+password: pass
+port: 5432
+user: admin
