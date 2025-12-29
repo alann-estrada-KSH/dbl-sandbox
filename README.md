@@ -81,7 +81,7 @@ Option A — simple launcher script:
 	```bat
 	@echo off
 	REM Update the path below to your dbl.py
-	python "C:\\Users\\alann\\KSH\\Tests\\dbl-sandbox\\dbl.py" %*
+	python "C:\\Users\\your_user\\or_your_route\\dbl-sandbox\\dbl.py" %*
 	```
 3. Open a new terminal and test:
 	```powershell
@@ -197,4 +197,5 @@ DBL is in early alpha. If you encounter bugs, have feature requests, or want to 
 - Share your use cases and workflows
 
 **Remember**: This tool is experimental. Use responsibly and always maintain backups of your databases.
+
 
