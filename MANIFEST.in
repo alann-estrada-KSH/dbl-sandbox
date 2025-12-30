@@ -1,0 +1,11 @@
+include README.md
+include LICENSE
+include requirements.txt
+include COMMANDS.md
+include QUICKSTART.md
+include ARCHITECTURE.md
+recursive-include dbl *.py
+recursive-include docs *.md
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store

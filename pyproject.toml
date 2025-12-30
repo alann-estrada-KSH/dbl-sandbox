@@ -1,0 +1,69 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dbl-sandbox"
+version = "0.0.1-alpha"
+description = "Git-like version control for databases"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Alan Estrada", email = ""},
+]
+keywords = ["database", "version-control", "migrations", "git", "schema", "postgresql", "mysql"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Version Control",
+    "Topic :: Database",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black>=23.0",
+    "flake8>=6.0",
+]
+docs = [
+    "mkdocs-material>=9.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/alann-estrada-KSH/dbl-sandbox"
+Documentation = "https://alann-estrada-ksh.github.io/dbl-sandbox/"
+Repository = "https://github.com/alann-estrada-KSH/dbl-sandbox"
+Issues = "https://github.com/alann-estrada-KSH/dbl-sandbox/issues"
+
+[project.scripts]
+dbl = "dbl.__main__:main"
+
+[tool.setuptools]
+packages = ["dbl", "dbl.commands", "dbl.engines"]
+
+[tool.setuptools.package-data]
+dbl = ["*.yaml", "*.yml"]
+
+[tool.black]
+line-length = 100
+target-version = ['py37', 'py38', 'py39', 'py310', 'py311']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"

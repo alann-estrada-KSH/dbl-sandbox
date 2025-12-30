@@ -31,6 +31,7 @@ def cmd_help(args):
     print("  rev-parse <ref>                       (Resolve references)")
     print("  rebase <onto> [--dry-run]             (Rebase current branch)")
     print("  validate [branch]                     (Validate phases (non-blocking))")
+    print("  update [-y]                           (Check and install updates)")
     print("  version                               (Show version information)")
     print("  help                                  (Show this help)")
     print("")

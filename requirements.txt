@@ -1,0 +1,5 @@
+# DBL - Database Layering
+# Python dependencies
+
+# YAML configuration parsing
+PyYAML>=6.0

@@ -12,7 +12,8 @@ from dbl.utils import log
 from dbl.commands import (
     cmd_help, cmd_version, cmd_init, cmd_import, cmd_sandbox,
     cmd_diff, cmd_commit, cmd_reset, cmd_branch, cmd_checkout,
-    cmd_merge, cmd_pull, cmd_log, cmd_rev_parse, cmd_rebase, cmd_validate
+    cmd_merge, cmd_pull, cmd_log, cmd_rev_parse, cmd_rebase, cmd_validate,
+    cmd_update
 )
 
 
@@ -88,6 +89,10 @@ def main():
     val.add_argument("branch", nargs="?", help="Branch to validate (optional, uses current)")
     val.add_argument("--fix", action="store_true", help="(Future) Attempt safe autofix")
 
+    # Update
+    upd = sub.add_parser("update", help="Check for updates and install them")
+    upd.add_argument("-y", "--yes", action="store_true", help="Auto-confirm update installation")
+
     try:
         args = parser.parse_args()
         
@@ -107,6 +112,7 @@ def main():
         elif args.cmd == "rev-parse": cmd_rev_parse(args)
         elif args.cmd == "rebase": cmd_rebase(args)
         elif args.cmd == "validate": cmd_validate(args)
+        elif args.cmd == "update": cmd_update(args)
         elif args.cmd == "help": cmd_help(args)
         else: cmd_help(args)
 

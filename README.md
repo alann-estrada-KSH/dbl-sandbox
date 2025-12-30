@@ -30,6 +30,21 @@ DBL is a **local development tool** for:
 
 It's designed for developers who want git-like workflows for database schema and optional data tracking.
 
+---
+
+## 📚 Documentation
+
+**📖 Full documentation:** [https://alann-estrada-ksh.github.io/dbl-sandbox/](https://alann-estrada-ksh.github.io/dbl-sandbox/)
+
+Quick links:
+- [Getting Started Guide](https://alann-estrada-ksh.github.io/dbl-sandbox/getting-started/)
+- [Command Reference](https://alann-estrada-ksh.github.io/dbl-sandbox/commands/)
+- [Changelog & Versions](https://alann-estrada-ksh.github.io/dbl-sandbox/changelog/)
+- [Architecture Details](ARCHITECTURE.md)
+- [Release Process](RELEASE.md)
+
+---
+
 ## What DBL is NOT
 
 ⚠️ **Important Disclaimers:**
@@ -50,47 +65,105 @@ If you need battle-tested, production-grade schema management, use established m
 - CLI: Single script executable as `dbl` from any shell.
 
 ## Prerequisites
-- Python: 3.8+ (recommended 3.10+)
+- Python: 3.7+ (recommended 3.10+)
+- pip: Python package installer (usually included with Python)
 - Database client tools (match your engine):
   - Postgres: `psql`, `pg_dump`
   - MySQL: `mysql`, `mysqldump`
 - Optional: Docker (if you use a containerized DB) and an editor (`nano`, `vim`, or your default editor).
 
-## Install so you can run `dbl`
+## Installation
 
-### Linux (native) and macOS
-1. Make the CLI executable:
-	```bash
-	chmod +x /path/to/dbl.py
-	```
-2. Create a symlink in your PATH:
-	```bash
-	# macOS/Linux (requires sudo for /usr/local/bin)
-	sudo ln -sf /path/to/dbl.py /usr/local/bin/dbl
-	```
-3. Test:
-	```bash
-	dbl help
-	```
+### Option 1: Install via pip (Recommended)
 
-Notes:
-- If you prefer a per-user install, use `~/bin` and add it to `PATH`:
-  ```bash
-  mkdir -p ~/bin
-  ln -sf /path/to/dbl.py ~/bin/dbl
-  echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc  # or ~/.zshrc
-  ```
+Install directly from GitHub (includes all dependencies):
 
-### Windows (PowerShell / CMD)
-Option A — simple launcher script:
-1. Create a user bin folder and add it to PATH:
-	- Create `%USERPROFILE%\bin`
-	- Add `%USERPROFILE%\bin` to System/User `PATH`
-2. Create a launcher file `%USERPROFILE%\bin\dbl.cmd` with:
-	```bat
-	@echo off
-	REM Update the path below to your dbl.py
-	python "C:\\Users\\alann\\KSH\\Tests\\dbl-sandbox\\dbl.py" %*
+```bash
+pip install git+https://github.com/alann-estrada-KSH/dbl-sandbox.git
+```
+
+This will:
+- ✅ Install DBL and all dependencies (PyYAML)
+- ✅ Create a global `dbl` command
+- ✅ Work on Linux, macOS, and Windows
+
+Test the installation:
+```bash
+dbl help
+dbl version
+```
+
+### Option 2: Development/Local Install
+
+For development or if you want to modify the code:
+
+1. Clone the repository:
+```bash
+git clone https://github.com/alann-estrada-KSH/dbl-sandbox.git
+cd dbl-sandbox
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+3. Install in editable mode:
+```bash
+pip install -e .
+```
+
+Or create a symlink manually:
+
+#### Linux and macOS
+```bash
+chmod +x /path/to/dbl.py
+sudo ln -sf /path/to/dbl.py /usr/local/bin/dbl
+```
+
+#### macOS with Homebrew Python
+If using Homebrew Python:
+```bash
+chmod +x /path/to/dbl.py
+ln -sf /path/to/dbl.py /opt/homebrew/bin/dbl
+```
+
+Test:
+```bash
+dbl help
+```
+
+### Option 3: Windows Installation
+
+#### Via pip (Recommended)
+```powershell
+pip install git+https://github.com/alann-estrada-KSH/dbl-sandbox.git
+```
+
+#### Manual Installation
+1. Install dependencies:
+```powershell
+pip install -r requirements.txt
+```
+
+2. Create a batch file `dbl.cmd` in `%USERPROFILE%\bin\`:
+```batch
+@echo off
+python "C:\path\to\dbl.py" %*
+```
+
+3. Add `%USERPROFILE%\bin` to your PATH if not already there.
+
+### Option 4: WSL (Windows Subsystem for Linux)
+1. Install in WSL:
+```bash
+```bash
+pip install git+https://github.com/alann-estrada-KSH/dbl-sandbox.git
+```
+2. Use `wsl dbl help` from Windows or run directly inside WSL.
+
+### Updating or uninstalling
+	python "C:\\Users\\your_name\\your\\route\\dbl-sandbox\\dbl.py" %*
 	```
 3. Open a new terminal and test:
 	```powershell
@@ -106,8 +179,20 @@ Option B — WSL (recommended for Postgres tooling):
 2. Use `wsl dbl help` from Windows or run directly inside WSL.
 
 ### Updating or uninstalling
-- To update, replace `/path/to/dbl.py` and recreate the symlink if needed.
-- To uninstall, remove the symlink (`/usr/local/bin/dbl`) or delete `%USERPROFILE%\bin\dbl.cmd`.
+
+**Automatic update (recommended)**:
+```bash
+dbl update          # Interactive - asks for confirmation
+dbl update -y       # Auto-confirm installation
+```
+This checks GitHub for the latest release and installs it automatically via pip.
+
+**Manual update**:
+- To update manually, replace `/path/to/dbl.py` and recreate the symlink if needed.
+- Or use pip: `pip install --upgrade git+https://github.com/alann-estrada-KSH/dbl-sandbox.git`
+
+**Uninstalling**:
+- Remove the symlink (`/usr/local/bin/dbl`) or delete `%USERPROFILE%\bin\dbl.cmd`.
 
 ## Project Layout
 Real-world usage per project:
@@ -169,10 +254,46 @@ What each part does:
 - `validate`: rules for warn-only vs strict behavior (see COMMANDS.md)
 
 ## Troubleshooting
-- "dbl: command not found": ensure the symlink (`/usr/local/bin/dbl`) or `%USERPROFILE%\bin\dbl.cmd` is on `PATH` and points to the correct `dbl.py`.
-- Postgres errors like `psql not found`: install client tools (on macOS via Homebrew: `brew install postgresql`; on Linux via your package manager; on Windows consider WSL).
-- Docker usage: set `container_name` in `dbl.yaml` to make DBL run commands inside the container.
-- Permission issues on symlink: use a per-user `~/bin` directory and add it to `PATH`.
+
+### Command Not Found
+- **Issue**: "dbl: command not found"
+- **Solution**: 
+  - Ensure pip installed correctly: `pip show dbl-sandbox`
+  - Or check symlink: `/usr/local/bin/dbl` (Linux/macOS) or `%USERPROFILE%\bin\dbl.cmd` (Windows)
+  - Try running directly: `python -m dbl help`
+
+### Missing Dependencies
+- **Issue**: ImportError or "No module named 'yaml'"
+- **Solution**:
+  ```bash
+  pip install PyYAML>=6.0
+  # Or install all dependencies
+  pip install -r requirements.txt
+  ```
+- **Auto-fix**: Run `dbl update` to automatically check and install missing dependencies
+
+### Database Client Tools
+- **Postgres**: `psql not found`
+  - macOS: `brew install postgresql`
+  - Ubuntu/Debian: `sudo apt-get install postgresql-client`
+  - Windows: Install PostgreSQL or use WSL
+- **MySQL**: `mysql not found`
+  - macOS: `brew install mysql-client`
+  - Ubuntu/Debian: `sudo apt-get install mysql-client`
+  - Windows: Install MySQL or use WSL
+
+### Docker Issues
+- **Issue**: DBL can't connect to database in container
+- **Solution**: Set `container_name` in `dbl.yaml` to run commands inside the container
+
+### Permission Issues
+- **Issue**: Can't create symlink (macOS/Linux)
+- **Solution**: Use per-user directory:
+  ```bash
+  mkdir -p ~/bin
+  ln -sf /path/to/dbl.py ~/bin/dbl
+  echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc  # or ~/.zshrc
+  ```
 
 
 ## ⚠️ Important Warnings
@@ -209,10 +330,8 @@ DBL is in early alpha. If you encounter bugs, have feature requests, or want to 
 
 DBL is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
 
-
 ## Credits
 
 Developed by [Alan Estrada](https://github.com/alannnn-estrada). Inspired by git workflows and database migration best practices.
-
 
 *Happy database layering!*

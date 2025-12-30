@@ -10,6 +10,20 @@ Show DBL version.
 - **When to use**: To verify your DBL installation or check for updates.
 - **Syntax**: `dbl version`
 
+### update
+Check for and install DBL updates.
+- **What it does**: Checks GitHub for the latest release version, compares with your current version, and optionally installs the update.
+- **When to use**: To keep DBL up to date with the latest features and bug fixes.
+- **Syntax**: 
+  - `dbl update` - Interactive mode (asks for confirmation)
+  - `dbl update -y` or `dbl update --yes` - Auto-confirm installation
+- **Features**:
+  - Compares current version with latest GitHub release
+  - Shows release notes before updating
+  - Installs automatically via pip from GitHub
+  - Works with both stable and pre-release versions (alpha, beta)
+- **Requirements**: Internet connection and pip installed
+
 ### help
 Show available commands and validation config.
 - **What it does**: Prints a list of all DBL commands with brief descriptions and shows the current validation configuration options.

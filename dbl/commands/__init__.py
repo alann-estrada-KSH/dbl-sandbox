@@ -10,6 +10,7 @@ from .log import cmd_log, cmd_rev_parse
 from .reset import cmd_reset
 from .validate import cmd_validate
 from .rebase import cmd_rebase
+from .update import cmd_update
 
 __all__ = [
     'cmd_help',
@@ -28,4 +29,5 @@ __all__ = [
     'cmd_reset',
     'cmd_validate',
     'cmd_rebase',
+    'cmd_update',
 ]

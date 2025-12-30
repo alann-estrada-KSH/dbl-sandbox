@@ -1,0 +1,149 @@
+site_name: DBL - Database Layering
+site_description: Git-like version control for databases
+site_author: Alan Estrada
+site_url: https://alann-estrada-ksh.github.io/dbl-sandbox/
+
+repo_name: alann-estrada-KSH/dbl-sandbox
+repo_url: https://github.com/alann-estrada-KSH/dbl-sandbox
+
+theme:
+  name: material
+  language: en
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  
+  icon:
+    repo: fontawesome/brands/github
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: material.extensions.emoji.twemoji
+      emoji_generator: material.extensions.emoji.to_svg
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+nav:
+  - Home: index.md
+  
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quick-start.md
+    - Your First Migration: getting-started/first-migration.md
+  
+  - Commands:
+    - Overview: commands/index.md
+    - Setup Commands:
+      - init: commands/setup/init.md
+      - version: commands/setup/version.md
+      - update: commands/setup/update.md
+    - Sandbox Commands:
+      - sandbox start: commands/sandbox/start.md
+      - sandbox apply: commands/sandbox/apply.md
+      - sandbox rollback: commands/sandbox/rollback.md
+      - sandbox status: commands/sandbox/status.md
+    - Change Management:
+      - diff: commands/changes/diff.md
+      - commit: commands/changes/commit.md
+      - reset: commands/changes/reset.md
+    - Branching:
+      - Overview: commands/branching/index.md
+    - History & Inspection:
+      - log: commands/history/log.md
+    - Validation:
+      - validate: commands/setup/validate.md
+  
+  - User Guide:
+    - Configuration: guide/configuration.md
+    - Best Practices: guide/best-practices.md
+  
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Database Engines: architecture/engines.md
+  
+  - Reference:
+    - FAQ: reference/faq.md
+    - Troubleshooting: reference/troubleshooting.md
+    - Changelog: changelog.md
+  
+  - Contributing: contributing.md
+  
+  - Español:
+    - Inicio: es/index.md
+    - Comenzar:
+      - Instalación: es/getting-started/installation.md
+      - Inicio Rápido: es/getting-started/quick-start.md
+      - Tu Primera Migración: es/getting-started/first-migration.md
+    - Comandos:
+      - Resumen: es/commands/index.md
+      - Configuración:
+        - init: es/commands/setup/init.md
+      - Sandbox:
+        - sandbox start: es/commands/sandbox/start.md
+      - Gestión de Cambios:
+        - diff: es/commands/changes/diff.md
+        - commit: es/commands/changes/commit.md
+    - Guía de Usuario:
+      - Configuración: es/guide/configuration.md
+      - Mejores Prácticas: es/guide/best-practices.md
+
+plugins:
+  - search:
+      lang:
+        - en
+        - es
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/alann-estrada-KSH
+  alternate:
+    - name: English
+      link: /
+      lang: en
+    - name: Español
+      link: /es/
+      lang: es
