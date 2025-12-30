@@ -34,7 +34,24 @@ class PostgresEngine(DBEngine):
         run_command(f'{self.get_base_cmd(self.get_admin_db_name())} -c "CREATE DATABASE {db_name};"', env=self._auth_env())
 
     def clone_db(self, source, target):
-        log(f"Clonando {source} -> {target}...", "info")
+        log(f"   🔄 Cloning {source} → {target}...", "info")
+        
+        import subprocess, threading, sys
+        # Show spinner
+        stop_spinner = False
+        def spinner():
+            chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+            idx = 0
+            while not stop_spinner:
+                sys.stdout.write(f'\r   {chars[idx % len(chars)]} Cloning database...')
+                sys.stdout.flush()
+                idx += 1
+                threading.Event().wait(0.1)
+            sys.stdout.write('\r   ✓ Database cloned successfully' + ' '*20 + '\n')
+            sys.stdout.flush()
+        
+        t = threading.Thread(target=spinner)
+        t.start()
         try:
             kill = f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='{source}' AND pid <> pg_backend_pid();"
             run_command(f'{self.get_base_cmd(self.get_admin_db_name())} -c "{kill}"', env=self._auth_env())
@@ -46,6 +63,9 @@ class PostgresEngine(DBEngine):
             if self.is_docker: 
                 dump = f"docker exec {self.container} {dump}"
             run_command(f"{dump} | {self.get_base_cmd(target)}", env=self._auth_env())
+        finally:
+            stop_spinner = True
+            t.join()
 
     def get_tables(self, db_name):
         cmd = f'{self.get_base_cmd(db_name)} -t -c "SELECT tablename FROM pg_tables WHERE schemaname=\'public\';"'

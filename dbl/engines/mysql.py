@@ -24,11 +24,34 @@ class MySQLEngine(DBEngine):
         run_command(f'{self.get_base_cmd()} -e "CREATE DATABASE {db_name};"')
     
     def clone_db(self, source, target):
+        from ..utils import log
+        log(f"   🔄 Cloning {source} → {target}...", "info")
         self.create_db(target)
         dump = f"mysqldump -h{self.host} -P{self.port} -u{self.user} -p{self.password} {source}"
         if self.is_docker: 
             dump = f"docker exec {self.container} {dump}"
-        run_command(f"{dump} | {self.get_base_cmd(target)}")
+        
+        import subprocess, threading, sys
+        # Show spinner while cloning
+        stop_spinner = False
+        def spinner():
+            chars = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+            idx = 0
+            while not stop_spinner:
+                sys.stdout.write(f'\r   {chars[idx % len(chars)]} Cloning database...')
+                sys.stdout.flush()
+                idx += 1
+                threading.Event().wait(0.1)
+            sys.stdout.write('\r   ✓ Database cloned successfully' + ' '*20 + '\n')
+            sys.stdout.flush()
+        
+        t = threading.Thread(target=spinner)
+        t.start()
+        try:
+            run_command(f"{dump} | {self.get_base_cmd(target)}")
+        finally:
+            stop_spinner = True
+            t.join()
 
     def get_tables(self, db_name):
         cmd = f'{self.get_base_cmd(db_name)} -N -e "SHOW TABLES;"'
@@ -40,13 +63,7 @@ class MySQLEngine(DBEngine):
         return f'{self.get_base_cmd(db_name)} -N -B -e "{query}"'
 
     def inspect_db(self, db_name):
-        query = """
-            SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT,
-                   CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE
-            FROM INFORMATION_SCHEMA.COLUMNS 
-            WHERE TABLE_SCHEMA = DATABASE() 
-            ORDER BY TABLE_NAME, ORDINAL_POSITION;
-        """
+        query = f"SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT, CHARACTER_MAXIMUM_LENGTH, NUMERIC_PRECISION, NUMERIC_SCALE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '{db_name}' ORDER BY TABLE_NAME, ORDINAL_POSITION;"
         cmd = f'{self.get_base_cmd(db_name)} -N -B -e "{query}"'
         out = run_command(cmd, capture=True)
         schema = {}
@@ -91,12 +108,7 @@ class MySQLEngine(DBEngine):
         return run_command(dump, capture=True)
 
     def get_primary_keys(self, db_name, table):
-        query = f"""
-            SELECT COLUMN_NAME
-            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-            WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '{table}' AND CONSTRAINT_NAME = 'PRIMARY'
-            ORDER BY ORDINAL_POSITION;
-        """
+        query = f"SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = '{db_name}' AND TABLE_NAME = '{table}' AND CONSTRAINT_NAME = 'PRIMARY' ORDER BY ORDINAL_POSITION;"
         cmd = f'{self.get_base_cmd(db_name)} -N -B -e "{query}"'
         out = run_command(cmd, capture=True)
         return [line.strip() for line in out.splitlines() if line.strip()]

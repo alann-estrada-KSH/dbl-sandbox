@@ -5,12 +5,18 @@ Detect and display database changes in your sandbox.
 ## Synopsis
 
 ```bash
-dbl diff
+dbl diff [--tables TABLE1 TABLE2 ...]
 ```
 
 ## Description
 
 Compares the current sandbox database against the baseline state to detect all schema and data changes. This command is essential for reviewing what will be committed before you save changes as a layer.
+
+## Options
+
+| Option | Description |
+|--------|-------------|
+| `--tables TABLE1 TABLE2 ...` | Check only specific tables instead of all tracked tables |
 
 ## Exit Codes
 
@@ -91,6 +97,32 @@ Changes detected: 2 schema modifications
 Exit code: 1
 ```
 
+### Check Specific Tables Only
+
+```bash
+# Only check the 'users' table for changes
+dbl diff --tables users
+
+# Check multiple specific tables
+dbl diff --tables users posts comments
+
+# Useful for large databases with many tables
+dbl diff --tables orders order_items payments
+```
+
+**Output with `--tables`:**
+```
+🔍 Filtering 1 specific tables: users
+ℹ️  Analyzing state of: myapp_sandbox...
+ℹ️     Schema: 325 tables | Tracking: 1 tables
+⏳ [████████████████████████████] 100% (1/1) tables - users
+   ✓ Tracked: 1 tables successfully
+
+🔴 DATA CHANGE: users
+   Current:  abc123ef...
+   Baseline: def456gh...
+```
+
 ## Detailed Output
 
 For more verbose output:
@@ -109,6 +141,13 @@ track_tables:
   - posts
   - comments
 ```
+
+!!! tip "Performance Optimization"
+    For databases with hundreds of tables, use `--tables` to check only relevant tables:
+    ```bash
+    # Much faster than scanning all 500+ tables
+    dbl diff --tables critical_table
+    ```
 
 ## Complete Example
 

@@ -5,20 +5,22 @@ Guardar cambios del sandbox como una nueva capa versionada.
 ## Sinopsis
 
 ```bash
-dbl commit -m "mensaje"              # Commit básico
-dbl commit -m "mensaje" --with-data  # Incluir migración de datos
+dbl commit -m "mensaje"              # Commit completo (esquema + datos)
+dbl commit -m "mensaje" --schema-only  # Solo cambios de esquema
 ```
 
 ## Descripción
 
 Guarda los cambios del sandbox como una "capa" (layer) - un archivo SQL versionado que puede ser replicado. Las capas son el equivalente de commits en Git, pero para esquemas de base de datos.
 
+**Por defecto**, se incluyen tanto cambios de esquema (DDL) como datos (DML). Usa `--schema-only` para excluir cambios de datos.
+
 ## Opciones
 
 | Opción | Descripción |
 |--------|-------------|
 | `-m, --message MSG` | Mensaje descriptivo del commit (requerido) |
-| `--with-data` | Incluir migración de datos en la capa |
+| `--schema-only` | Guardar solo cambios de esquema (DDL), excluir datos (DML) |
 
 ## Ejemplo de Uso
 
@@ -29,7 +31,7 @@ dbl commit -m "Add notifications table"
 **Salida:**
 ```
 Creating layer from sandbox changes...
-✓ Generated SQL from diff
+✓ Generated SQL from diff (schema+data)
 ✓ Layer L008 created: Add notifications table
 ✓ Layer saved to .dbl/layers/L008_add_notifications_table.sql
 
@@ -45,7 +47,7 @@ Your changes are now committed and can be applied.
 $ dbl sandbox start
 ✓ Sandbox created: myapp_sandbox
 
-# 2. Hacer cambios
+# 2. Hacer cambios (esquema + datos)
 $ psql -d myapp_sandbox << EOF
 CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
@@ -57,6 +59,10 @@ CREATE TABLE comments (
 
 CREATE INDEX idx_comments_post ON comments(post_id);
 CREATE INDEX idx_comments_author ON comments(author_id);
+
+-- Agregar datos de prueba
+INSERT INTO comments (post_id, author_id, content) 
+VALUES (1, 100, 'Comentario de prueba');
 EOF
 
 # 3. Revisar cambios
@@ -64,14 +70,53 @@ $ dbl diff
 + CREATE TABLE comments (...)
 + CREATE INDEX idx_comments_post ...
 + CREATE INDEX idx_comments_author ...
++ INSERT INTO comments (1 row changed)
 
-# 4. Guardar como capa
-$ dbl commit -m "Add comments table with indexes"
-✓ Layer L005 created
+# 4a. Guardar solo esquema (ignorar datos de prueba)
+$ dbl commit -m "Add comments table with indexes" --schema-only
+✓ Layer L005 created (schema)
+
+# 4b. O guardar todo (esquema + datos)
+$ dbl commit -m "Add comments table with sample data"
+✓ Layer L005 created (schema+data)
 
 # 5. Aplicar a base principal
 $ dbl sandbox apply
 ✓ Changes applied to myapp
+```
+
+## Casos de Uso
+
+### Commit con Datos (por defecto)
+
+Útil cuando quieres migrar datos reales:
+
+```bash
+# Agregar datos de producción
+psql -d myapp_sandbox -c "
+INSERT INTO settings (key, value) VALUES 
+    ('maintenance_mode', 'false'),
+    ('api_version', 'v2');
+"
+
+# Commit incluye datos automáticamente
+dbl commit -m "Add initial settings"
+```
+
+### Commit Solo Esquema
+
+Útil cuando trabajas con datos de prueba que no quieres en producción:
+
+```bash
+# Hacer cambios con datos de prueba
+psql -d myapp_sandbox -c "
+ALTER TABLE users ADD COLUMN phone VARCHAR(20);
+INSERT INTO users (username, email, phone) VALUES 
+    ('testuser', 'test@example.com', '555-0100');
+"
+
+# Commit solo el ALTER, no el INSERT
+dbl commit -m "Add phone column" --schema-only
 ```
 
 ## Qué Crea un Commit

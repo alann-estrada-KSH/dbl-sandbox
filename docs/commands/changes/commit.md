@@ -6,19 +6,21 @@ Save database changes as a versioned layer.
 
 ```bash
 dbl commit -m "message"
-dbl commit -m "message" --with-data
+dbl commit -m "message" --schema-only
 ```
 
 ## Description
 
 Captures the current sandbox changes and saves them as a versioned layer (migration). This creates a SQL file that can be replayed to reproduce the changes.
 
+**By default**, both schema and data changes are included in commits. Use `--schema-only` to exclude data changes.
+
 ## Options
 
 | Option | Description |
 |--------|-------------|
 | `-m, --message` | Commit message (required) |
-| `--with-data` | Include INSERT/UPDATE statements for tracked tables |
+| `--schema-only` | Commit only schema changes (DDL), exclude data changes (DML) |
 
 ## What It Does
 
@@ -30,7 +32,7 @@ Captures the current sandbox changes and saves them as a versioned layer (migrat
 
 ## Usage Examples
 
-### Basic Schema Commit
+### Basic Commit (Schema + Data)
 
 ```bash
 # Make changes in sandbox
@@ -40,44 +42,49 @@ CREATE TABLE notifications (
     user_id INTEGER NOT NULL,
     message TEXT
 );
+INSERT INTO notifications (user_id, message) VALUES (1, 'Welcome!');
 "
 
-# Commit changes
-dbl commit -m "Add notifications table"
+# Commit changes (includes both schema and data by default)
+dbl commit -m "Add notifications table with sample data"
 ```
 
 **Output:**
 ```
 ✓ Changes detected via diff
-✓ Generated migration SQL
+✓ Generated migration SQL (schema+data)
 ✓ Created layer L001
 ✓ Updated manifest
 ✓ Saved: .dbl/layers/L001_add_notifications_table.sql
 
 Layer Details:
   ID: L001
-  Message: Add notifications table
+  Message: Add notifications table with sample data
+  Type: schema+data
   Branch: master
   Timestamp: 2025-12-30 12:34:56
   Phase: expand (safe additions)
 ```
 
-### Commit with Data
+### Schema-Only Commit
 
 ```bash
-# Insert sample data
+# Insert test data in sandbox
 psql -d myapp_sandbox -c "
-INSERT INTO users (username, email) VALUES 
-    ('alice', 'alice@example.com'),
-    ('bob', 'bob@example.com');
+ALTER TABLE users ADD COLUMN phone VARCHAR(20);
+INSERT INTO users (username, email, phone) VALUES 
+    ('testuser', 'test@example.com', '555-0100');
 "
 
-# Commit with data flag
-dbl commit -m "Add test users" --with-data
+# Commit only schema changes, ignore test data
+dbl commit -m "Add phone column" --schema-only
 ```
 
-**Generated SQL includes:**
+**Generated SQL includes only:**
 ```sql
+-- Add phone column
+ALTER TABLE users ADD COLUMN phone VARCHAR(20);
+-- Data changes excluded (--schema-only flag)
 -- Phase: backfill (data changes)
 INSERT INTO users (username, email) VALUES 
     ('alice', 'alice@example.com'),

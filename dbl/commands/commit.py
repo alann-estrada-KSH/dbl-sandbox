@@ -26,7 +26,8 @@ def cmd_commit(args):
         meta = json.load(f)
     backup_db = meta['backup_db']
     
-    include_data = args.with_data if hasattr(args, 'with_data') and args.with_data else False
+    schema_only = args.schema_only if hasattr(args, 'schema_only') and args.schema_only else False
+    include_data = not schema_only  # Data is included by default, unless --schema-only specified
     
     # Generate migration SQL
     sql = generate_migration_sql(config, engine, db, backup_db, include_data=include_data)

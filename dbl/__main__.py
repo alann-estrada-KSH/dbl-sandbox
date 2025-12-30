@@ -57,10 +57,11 @@ def main():
     sb_act.add_parser("status")
     
     # Diff and commit
-    sub.add_parser("diff")
+    diff_p = sub.add_parser("diff")
+    diff_p.add_argument("--tables", nargs="+", help="Specific tables to check (e.g., --tables users products)")
     com_p = sub.add_parser("commit")
     com_p.add_argument("-m", "--message", required=True)
-    com_p.add_argument("--with-data", action="store_true", help="Include data sync (opt-in)")
+    com_p.add_argument("--schema-only", action="store_true", help="Commit only schema changes, exclude data changes")
     
     # Branch commands
     br = sub.add_parser("branch")
