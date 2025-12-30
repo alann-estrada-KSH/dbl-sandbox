@@ -19,8 +19,6 @@ dbl-sandbox/
 └── dbl_legacy.py         # Original monolithic version (backup)
 ```
 
----
-
 ## What is DBL?
 
 DBL is a **local development tool** for:
@@ -31,8 +29,6 @@ DBL is a **local development tool** for:
 - **Replaying changes deterministically** for reproducible DB state.
 
 It's designed for developers who want git-like workflows for database schema and optional data tracking.
-
----
 
 ## What DBL is NOT
 
@@ -47,7 +43,6 @@ It's designed for developers who want git-like workflows for database schema and
 
 If you need battle-tested, production-grade schema management, use established migration tools.
 
----
 
 ## Quick Summary
 - Purpose: Safely evolve schemas and optionally data, track changes as layers, and rebuild deterministically.
@@ -179,7 +174,6 @@ What each part does:
 - Docker usage: set `container_name` in `dbl.yaml` to make DBL run commands inside the container.
 - Permission issues on symlink: use a per-user `~/bin` directory and add it to `PATH`.
 
----
 
 ## ⚠️ Important Warnings
 
@@ -191,7 +185,6 @@ What each part does:
 - **Alpha Software**: Expect breaking changes between versions. Pin to a specific commit in production-like environments.
 - **Credentials in Config**: `dbl.yaml` contains plaintext passwords. Do NOT commit it to git. Use `.gitignore` or environment variables.
 
----
 
 ## Commands Reference
 See the full command guide in [COMMANDS.md](./COMMANDS.md) for detailed explanations, use cases, and examples.
@@ -201,7 +194,6 @@ Quick entry points:
 - `dbl validate` — analyze layers; warn by default, strict via config
 - `dbl rebase <onto> --dry-run` — preview rebase results before applying
 
----
 
 ## Contributing & Feedback
 
@@ -212,18 +204,15 @@ DBL is in early alpha. If you encounter bugs, have feature requests, or want to 
 
 **Remember**: This tool is experimental. Use responsibly and always maintain backups of your databases.
 
----
 
 ## License
 
 DBL is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
 
----
 
 ## Credits
 
 Developed by [Alan Estrada](https://github.com/alannnn-estrada). Inspired by git workflows and database migration best practices.
 
----
 
 *Happy database layering!*
