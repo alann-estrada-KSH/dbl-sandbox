@@ -27,7 +27,6 @@ jobs:
           pip install --upgrade pip
           pip install mkdocs-material==9.5.3
           pip install pymdown-extensions==10.5
-          pip install mkdocs-static-i18n==1.2.0
       
       - name: Configure Git
         run: |

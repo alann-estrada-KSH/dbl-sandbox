@@ -28,7 +28,6 @@ theme:
         name: Switch to light mode
   
   features:
-    - navigation.instant
     - navigation.tracking
     - navigation.tabs
     - navigation.sections
@@ -106,49 +105,29 @@ nav:
     - Troubleshooting: reference/troubleshooting.md
     - Changelog: changelog.md
   
-  - Contributing: contributing.md
+  - Español:
+    - Inicio: es/index.md
+    - Comenzar:
+      - Instalación: es/getting-started/installation.md
+      - Inicio Rápido: es/getting-started/quick-start.md
+      - Tu Primera Migración: es/getting-started/first-migration.md
+    - Comandos:
+      - Resumen: es/commands/index.md
+    - Guía de Usuario:
+      - Configuración: es/guide/configuration.md
+      - Mejores Prácticas: es/guide/best-practices.md
+    - Arquitectura:
+      - Resumen: es/architecture/overview.md
+      - Motores de BD: es/architecture/engines.md
+    - Referencia:
+      - FAQ: es/reference/faq.md
+      - Solución de Problemas: es/reference/troubleshooting.md
 
 plugins:
   - search:
       lang:
         - en
         - es
-  - i18n:
-      docs_structure: folder
-      fallback_to_default: true
-      reconfigure_material: true
-      reconfigure_search: true
-      languages:
-        - locale: en
-          default: true
-          name: English
-          build: true
-        - locale: es
-          name: Español
-          build: true
-          nav_translations:
-            Home: Inicio
-            Getting Started: Comenzar
-            Installation: Instalación
-            Quick Start: Inicio Rápido
-            Your First Migration: Tu Primera Migración
-            Commands: Comandos
-            Overview: Resumen
-            Setup Commands: Comandos de Configuración
-            Sandbox Commands: Comandos de Sandbox
-            Change Management: Gestión de Cambios
-            Branching: Ramificación
-            History & Inspection: Historial e Inspección
-            Validation: Validación
-            User Guide: Guía de Usuario
-            Configuration: Configuración
-            Best Practices: Mejores Prácticas
-            Architecture: Arquitectura
-            Database Engines: Motores de Base de Datos
-            Reference: Referencia
-            Troubleshooting: Solución de Problemas
-            Changelog: Registro de Cambios
-            Contributing: Contribuir
 
 extra:
   social:
