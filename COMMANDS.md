@@ -4,6 +4,12 @@ A concise reference to DBL's commands, grouped by usage level.
 
 ## Basics
 
+### version
+Show DBL version.
+- **What it does**: Prints the currently installed DBL version.
+- **When to use**: To verify your DBL installation or check for updates.
+- **Syntax**: `dbl version`
+
 ### help
 Show available commands and validation config.
 - **What it does**: Prints a list of all DBL commands with brief descriptions and shows the current validation configuration options.
