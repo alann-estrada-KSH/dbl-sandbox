@@ -222,7 +222,7 @@ DBL is licensed under the MIT License. See [LICENSE](./LICENSE) for details.
 
 ## Credits
 
-Developed by Alan Estrada. Inspired by git workflows and database migration best practices.
+Developed by [Alan Estrada](https://github.com/alannnn-estrada). Inspired by git workflows and database migration best practices.
 
 ---
 

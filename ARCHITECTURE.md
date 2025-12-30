@@ -1,27 +1,27 @@
 # DBL - Database Layering
 
-## Estructura del Proyecto
+## Project Structure
 
-El proyecto ahora está organizado de forma modular para mejorar la mantenibilidad:
+The project is now organized in a modular way to improve maintainability:
 
 ```
 dbl-sandbox/
-├── dbl.py                  # Entry point principal
-├── dbl/                    # Paquete principal
-│   ├── __init__.py        # Metadata del paquete
-│   ├── constants.py       # Constantes y configuraciones
-│   ├── errors.py          # Excepciones personalizadas
-│   ├── utils.py           # Funciones utilitarias
-│   ├── manifest.py        # Gestión de manifiestos
-│   ├── config.py          # Gestión de configuración
-│   ├── state.py           # Gestión de estado de BD
-│   ├── planner.py         # Generador de SQL de migración
-│   ├── engines/           # Motores de base de datos
+├── dbl.py                  # Main entry point
+├── dbl/                    # Main package
+│   ├── __init__.py        # Package metadata
+│   ├── constants.py       # Constants and configurations
+│   ├── errors.py          # Custom exceptions
+│   ├── utils.py           # Utility functions
+│   ├── manifest.py        # Manifest management
+│   ├── config.py          # Configuration management
+│   ├── state.py           # Database state management
+│   ├── planner.py         # Migration SQL generator
+│   ├── engines/           # Database engines
 │   │   ├── __init__.py
-│   │   ├── base.py        # Clase abstracta base
-│   │   ├── postgres.py    # Implementación PostgreSQL
-│   │   └── mysql.py       # Implementación MySQL
-│   └── commands/          # Comandos CLI
+│   │   ├── base.py        # Abstract base class
+│   │   ├── postgres.py    # PostgreSQL implementation
+│   │   └── mysql.py       # MySQL implementation
+│   └── commands/          # CLI commands
 │       ├── __init__.py
 │       ├── help_cmd.py    # help, version
 │       ├── init.py        # init, import
@@ -35,78 +35,78 @@ dbl-sandbox/
 │       └── validate.py    # validate
 ```
 
-## Arquitectura
+## Architecture
 
-### Separación de Responsabilidades
+### Separation of Concerns
 
-1. **constants.py**: Todas las constantes, paths y colores
-2. **errors.py**: Excepciones personalizadas
-3. **utils.py**: Funciones auxiliares (log, run_command, confirm_action)
-4. **manifest.py**: Gestión de branches y layers
-5. **config.py**: Carga de configuración y factory de engines
-6. **state.py**: Comparación de estado de BD
-7. **planner.py**: Generación inteligente de SQL
+1. **constants.py**: All constants, paths, and colors
+2. **errors.py**: Custom exceptions
+3. **utils.py**: Auxiliary functions (log, run_command, confirm_action)
+4. **manifest.py**: Branch and layer management
+5. **config.py**: Configuration loading and engine factory
+6. **state.py**: Database state comparison
+7. **planner.py**: Intelligent SQL generation
 
-### Engines (Abstracción de BD)
+### Engines (DB Abstraction)
 
-- **base.py**: Clase abstracta `DBEngine` con interfaz común
-- **postgres.py**: Implementación específica para PostgreSQL
-- **mysql.py**: Implementación específica para MySQL
+- **base.py**: Abstract `DBEngine` class with common interface
+- **postgres.py**: PostgreSQL-specific implementation
+- **mysql.py**: MySQL-specific implementation
 
-Cada engine implementa:
-- Operaciones CRUD de BD
-- Inspección de schema (AST)
-- Generación de SQL dialect-specific
-- Dump de estructura y datos
+Each engine implements:
+- Database CRUD operations
+- Schema inspection (AST)
+- Dialect-specific SQL generation
+- Structure and data dump
 
-### Commands (Comandos CLI)
+### Commands (CLI Commands)
 
-Cada comando en su propio módulo para:
-- Mejor navegación del código
-- Testing unitario más fácil
-- Menor acoplamiento
-- Reutilización de lógica
+Each command in its own module for:
+- Better code navigation
+- Easier unit testing
+- Lower coupling
+- Logic reuse
 
-## Ventajas de la Nueva Estructura
+## Advantages of the New Structure
 
-1. **Mantenibilidad**: Cada módulo tiene una responsabilidad clara
-2. **Escalabilidad**: Fácil agregar nuevos engines o comandos
-3. **Testing**: Cada módulo se puede testear independientemente
-4. **Legibilidad**: Código más organizado y fácil de entender
-5. **Reutilización**: Componentes modulares reutilizables
+1. **Maintainability**: Each module has a clear responsibility
+2. **Scalability**: Easy to add new engines or commands
+3. **Testing**: Each module can be tested independently
+4. **Readability**: More organized and understandable code
+5. **Reuse**: Modular reusable components
 
-## Migración desde dbl.py monolítico
+## Migration from Monolithic dbl.py
 
-El archivo `dbl.py` monolítico original se ha dividido en:
-- 13 módulos core
+The original monolithic `dbl.py` file has been split into:
+- 13 core modules
 - 3 engines
-- 10 comandos separados
+- 10 separate commands
 
-**Total**: De 1 archivo de ~1000 líneas a 26 archivos modulares.
+**Total**: From 1 file of ~1000 lines to 26 modular files.
 
-## Uso
+## Usage
 
-El uso es idéntico al anterior:
+The usage is identical to before:
 
 ```bash
 python dbl.py init
 python dbl.py sandbox start
-python dbl.py commit -m "mi cambio"
+python dbl.py commit -m "my change"
 # etc.
 ```
 
-## Desarrollo
+## Development
 
-Para agregar un nuevo comando:
+To add a new command:
 
-1. Crear archivo en `dbl/commands/nuevo_cmd.py`
-2. Implementar función `cmd_nuevo(args)`
-3. Importar en `dbl/commands/__init__.py`
-4. Agregar parser en `dbl.py` main()
+1. Create file in `dbl/commands/new_cmd.py`
+2. Implement `cmd_new(args)` function
+3. Import in `dbl/commands/__init__.py`
+4. Add parser in `dbl.py` main()
 
-Para agregar un nuevo engine:
+To add a new engine:
 
-1. Crear archivo en `dbl/engines/nuevo_engine.py`
-2. Heredar de `DBEngine` e implementar métodos abstractos
-3. Importar en `dbl/engines/__init__.py`
-4. Agregar factory en `dbl/config.py`
+1. Create file in `dbl/engines/new_engine.py`
+2. Inherit from `DBEngine` and implement abstract methods
+3. Import in `dbl/engines/__init__.py`
+4. Add factory in `dbl/config.py`
