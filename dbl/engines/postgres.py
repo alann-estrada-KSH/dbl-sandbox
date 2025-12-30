@@ -51,6 +51,10 @@ class PostgresEngine(DBEngine):
         cmd = f'{self.get_base_cmd(db_name)} -t -c "SELECT tablename FROM pg_tables WHERE schemaname=\'public\';"'
         out = run_command(cmd, capture=True, env=self._auth_env())
         return [line.strip() for line in out.splitlines() if line.strip()]
+    
+    def execute_query(self, db_name, query):
+        """Execute a query and return command string for PostgreSQL"""
+        return f'{self.get_base_cmd(db_name)} -t -A -c "{query}"'
 
     def inspect_db(self, db_name):
         query = """

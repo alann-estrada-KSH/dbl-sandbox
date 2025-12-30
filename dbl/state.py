@@ -51,7 +51,7 @@ def get_state(engine, db_name, config):
                 
             order_by = ', '.join(pk_cols) if pk_cols else '1'
             query = f'SELECT * FROM {table} ORDER BY {order_by}'
-            cmd = f'{engine.get_base_cmd(db_name)} -c "{query}"'
+            cmd = engine.execute_query(db_name, query)
             data_raw = run_command(cmd, capture=True, 
                                   env=engine._auth_env() if isinstance(engine, PostgresEngine) else None)
             data_hashes[table] = hashlib.md5(data_raw.encode()).hexdigest()

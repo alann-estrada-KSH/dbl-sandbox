@@ -34,6 +34,10 @@ class MySQLEngine(DBEngine):
         cmd = f'{self.get_base_cmd(db_name)} -N -e "SHOW TABLES;"'
         out = run_command(cmd, capture=True)
         return [line.strip() for line in out.splitlines() if line.strip()]
+    
+    def execute_query(self, db_name, query):
+        """Execute a query and return command string for MySQL"""
+        return f'{self.get_base_cmd(db_name)} -N -B -e "{query}"'
 
     def inspect_db(self, db_name):
         query = """

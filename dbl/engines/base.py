@@ -44,6 +44,11 @@ class DBEngine(ABC):
         """Get list of tables in database"""
         pass
     
+    @abstractmethod
+    def execute_query(self, db_name, query):
+        """Execute a query and return the command string"""
+        pass
+    
     # --- INSPECTOR (AST Generator) ---
     @abstractmethod
     def inspect_db(self, db_name):
