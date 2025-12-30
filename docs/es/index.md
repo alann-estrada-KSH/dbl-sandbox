@@ -1,47 +1,41 @@
 # DBL - Database Layering
 
-<div align="center">
-
-![Versión](https://img.shields.io/badge/versi%C3%B3n-0.0.1--alpha-blue)
-![Estado](https://img.shields.io/badge/estado-experimental-orange)
-![Python](https://img.shields.io/badge/python-3.7+-green)
-![Licencia](https://img.shields.io/badge/licencia-Apache%202.0-lightgrey)
+![Versión](https://img.shields.io/badge/versi%C3%B3n-0.0.1--alpha-blue) ![Estado](https://img.shields.io/badge/estado-experimental-orange) ![Python](https://img.shields.io/badge/python-3.8+-green) ![Licencia](https://img.shields.io/badge/licencia-Apache%202.0-blue)
 
 **Control de versiones tipo Git para bases de datos**
-
-[Comenzar](getting-started/installation.md) · [Comandos](commands/index.md) · [Guía de Usuario](guide/configuration.md)
-
-</div>
 
 ---
 
 ## ¿Qué es DBL?
 
-DBL (Database Layering) es una **herramienta CLI ligera** que trae flujos de trabajo tipo Git a la evolución de esquemas de bases de datos:
+DBL (Database Layering) es un **sistema de control de versiones para bases de datos**, similar a Git pero diseñado específicamente para la evolución del esquema de bases de datos.
 
-- 🌿 **Ramifica tu esquema** - Trabaja en múltiples funcionalidades en paralelo
-- 🔒 **Sandbox de experimentos** - Prueba cambios sin romper tu base de datos
-- 📦 **Capas de cambios** - Control de versiones para migraciones SQL
-- ✅ **Valida patrones** - Verificaciones automáticas para migraciones seguras
-- 🔄 **Reproduce cambios** - Reconstrucciones determinísticas de base de datos
+### Capacidades Clave
+
+- **🌿 Ramifica tu esquema** - Trabaja en múltiples features en paralelo
+- **🔒 Pruebas en sandbox** - Experimenta sin afectar tu base de datos
+- **📦 Capas de cambios** - Control de versiones para todas tus migraciones SQL
+- **✅ Migraciones validadas** - Controles integrados para cambios seguros
+- **🔄 Reconstrucciones reproducibles** - Reconstrucción determinista de BD
 
 ---
 
 ## Inicio Rápido
 
 ```bash
-# Inicializar proyecto
+# 1. Inicializa proyecto
 dbl init
 
-# Crear sandbox
+# 2. Crea sandbox de desarrollo
 dbl sandbox start
 
-# Hacer tus cambios en tu base de datos...
+# 3. Realiza tus cambios
+# Usa tu cliente de BD favorito para modificar el esquema
 
-# Confirmar cambios
+# 4. Guarda tus cambios
 dbl commit -m "Agregar tabla user_preferences"
 
-# Aplicar cambios
+# 5. Aplica a la base de datos principal
 dbl sandbox apply
 ```
 
@@ -49,228 +43,190 @@ dbl sandbox apply
 
 ## Características Principales
 
-### 🏖️ Modo Sandbox
+### Experimentación Segura con Sandboxes
 
-Prueba cambios en un entorno aislado sin riesgo:
+Trabaja en un **sandbox** aislado - una copia temporal de tu base de datos donde puedes probar cambios sin riesgo alguno a producción o desarrollo.
+
+### Historial Completo de Capas
+
+Cada cambio se guarda como una **capa** numerada (como commits de Git), creando un historial completo y auditable de la evolución de tu base de datos. Ver el historial en cualquier momento con `dbl log`.
+
+### Ramificación tipo Git
+
+Crea **ramas** para diferentes features:
 
 ```bash
-dbl sandbox start      # Crea copia segura
-# Haz cambios...
-dbl sandbox apply      # ✓ Aplicar cambios
-# O
-dbl sandbox rollback   # ✗ Descartar todo
+dbl branch create feature/authentication
+dbl checkout feature/authentication
+# ... realiza tus cambios ...
+dbl checkout main
+dbl merge feature/authentication
 ```
 
-### 🌳 Ramificación
+### Bases de Datos Soportadas
 
-Trabaja en múltiples esquemas simultáneamente:
+- ✅ **PostgreSQL** 11+
+- ✅ **MySQL** 5.7+
+- 🔄 **SQLite** (planeado)
+
+---
+
+## Instalación
+
+Instala DBL con pip:
 
 ```bash
-dbl branch feature-payments    # Crear rama
-dbl checkout feature-payments  # Cambiar rama
-dbl merge master              # Fusionar cambios
+pip install dbl
 ```
 
-### 📦 Capas Versionadas
-
-Cada cambio se guarda como una capa reproducible:
+O clona desde GitHub para desarrollo:
 
 ```bash
-dbl commit -m "Agregar tabla payments"
-dbl log                        # Ver historial
-dbl reset                      # Reconstruir desde capas
+git clone https://github.com/alann-estrada-KSH/dbl-sandbox.git
+cd dbl-sandbox
+pip install -e .
 ```
 
-### ✅ Validación de Migraciones
+---
 
-Detección automática de patrones peligrosos:
+## Aprende Más
+
+### Comienza Aquí
+
+¿Nuevo en DBL? Comienza aquí:
+
+- [Guía de Instalación](getting-started/installation.md) - Instrucciones de setup detalladas
+- [Tutorial Rápido](getting-started/quick-start.md) - Tus primeros cambios en 5 minutos
+- [Primera Migración](getting-started/first-migration.md) - Ejemplo completo paso a paso
+
+### Referencia
+
+¿Necesitas ayuda con un comando específico?
+
+- [Todos los Comandos](commands/index.md) - Referencia completa de comandos
+- [Gestión de Sandbox](commands/sandbox/start.md) - Trabaja con sandboxes
+- [Guía de Ramas](commands/branching/index.md) - Gestión de ramas
+
+### Análisis Profundos
+
+Aprende arquitectura y patrones:
+
+- [Visión General de Arquitectura](architecture/overview.md) - Cómo funciona DBL
+- [Bases de Datos Soportadas](architecture/engines.md) - PostgreSQL, MySQL, más
+- [Mejores Prácticas](guide/best-practices.md) - Consejos para equipos y proyectos
+- [Configuración](guide/configuration.md) - Opciones de setup avanzado
+
+### Ayuda y Recursos
+
+- [FAQ](reference/faq.md) - 40+ preguntas frecuentes respondidas
+- [Solución de Problemas](reference/troubleshooting.md) - Resuelve problemas comunes
+- [Changelog](changelog.md) - Historial de versiones y cambios
+
+---
+
+## Flujos de Trabajo Comunes
+
+### Agregando una Nueva Feature
 
 ```bash
+# Crea rama de feature
+dbl branch create feature/payments
+
+# Cambia a rama de feature
+dbl checkout feature/payments
+
+# Crea sandbox
+dbl sandbox start
+
+# Realiza cambios de esquema usando tu cliente de BD
+# ... CREATE TABLE payments ...
+# ... CREATE INDEX idx_payments ...
+
+# Revisa cambios
+dbl diff
+
+# Guarda cambios
+dbl commit -m "Agregar tabla de pagos con índices"
+
+# Aplica a la BD de la rama de feature
+dbl sandbox apply
+
+# Vuelve a main
+dbl checkout main
+
+# Fusiona cambios
+dbl merge feature/payments
+```
+
+### Testeando Migraciones
+
+```bash
+# Prueba en un ambiente limpio
+dbl sandbox start
+
+# Reconstruye BD desde todas las capas
+dbl reset
+
+# Ejecuta tus tests de aplicación
+./run-tests.sh
+
+# Verifica que el esquema coincida
 dbl validate
-# ⚠️  Advertencia: DROP COLUMN detectado en contract
-# ⚠️  Advertencia: Cambio de tipo en expand
+
+# Despliega cuando esté listo
+dbl sandbox apply
 ```
 
 ---
 
-## ¿Por Qué Usar DBL?
+## ¿Por Qué DBL?
 
-### Problema: Evolución de Esquemas es Difícil
+### A Diferencia de Scripts SQL Raw
 
-❌ **Sin DBL:**
-- Cambios manuales propensos a errores
-- Sin historial de cambios de esquema
-- Difícil de revertir migraciones
-- Riesgoso probar cambios
-- No hay forma de ramificar esquemas
+- ✅ Versionado con Git
+- ✅ Sin ordenamiento manual de migraciones
+- ✅ Pruebas seguras en sandbox
+- ✅ Auditoría completa
 
-✅ **Con DBL:**
-- Control de versiones tipo Git
-- Historial completo de cambios
-- Sandboxes seguros para pruebas
-- Reversión fácil con `reset`
-- Ramas para desarrollo paralelo
+### A Diferencia de Migraciones de ORM (Alembic, Django)
 
-### ¿Cuándo Usar DBL?
+- ✅ Agnóstico de BD (PostgreSQL, MySQL, SQLite)
+- ✅ SQL puro - sin dependencia de framework
+- ✅ Portable entre proyectos
+- ✅ Funciona con cualquier lenguaje de programación
 
-✅ **Ideal para:**
-- Desarrollo local y staging
-- Equipos pequeños/medianos
-- Experimentación de esquemas
-- Aprendizaje de patrones de migración
-- Prototipado rápido
+### A Diferencia de Herramientas de Migración (Flyway, Liquibase)
 
-⚠️ **NO para:**
-- Producción (aún en alfa)
-- Equipos muy grandes (>20 devs)
-- Bases de datos críticas sin respaldo
-- Reemplazo de herramientas de migración maduras
+- ✅ Ramificación tipo Git para trabajo paralelo
+- ✅ Sandbox para pruebas seguras
+- ✅ Configuración YAML simple
+- ✅ Fácil de aprender y usar
 
 ---
 
-## Motores Soportados
+## Contribuir
 
-| Motor | Estado | Notas |
-|-------|--------|-------|
-| PostgreSQL | ✅ Completo | Recomendado |
-| MySQL | ✅ Completo | Probado con 8.0+ |
-| SQLite | 🚧 Planeado | Próxima versión |
+¡Bienvenidas las contribuciones! Aquí hay formas de ayudar:
 
----
-
-## Flujo de Trabajo Típico
-
-```mermaid
-graph TD
-    A[dbl init] --> B[dbl sandbox start]
-    B --> C[Hacer cambios en DB]
-    C --> D[dbl diff]
-    D --> E{¿Satisfecho?}
-    E -->|Sí| F[dbl commit]
-    E -->|No| C
-    F --> G[dbl sandbox apply]
-    G --> H[Cambios en DB Principal]
-```
-
----
-
-## Instalación Rápida
-
-```bash
-# Via pip (recomendado)
-pip install git+https://github.com/alann-estrada-KSH/dbl-sandbox.git
-
-# Verificar instalación
-dbl version
-dbl help
-```
-
-👉 [Guía de instalación completa](getting-started/installation.md)
-
----
-
-## Ejemplo: Tu Primera Migración
-
-```bash
-# 1. Inicializar
-$ dbl init
-✓ Proyecto DBL inicializado
-
-# 2. Configurar dbl.yaml
-$ nano dbl.yaml  # Agregar credenciales
-
-# 3. Crear sandbox
-$ dbl sandbox start
-✓ Sandbox creado: myapp_sandbox
-
-# 4. Hacer cambios (usando tu herramienta favorita)
-# Ejemplo: Agregar columna
-ALTER TABLE users ADD COLUMN last_login TIMESTAMP;
-
-# 5. Revisar cambios
-$ dbl diff
-+ ALTER TABLE users ADD COLUMN last_login TIMESTAMP;
-
-# 6. Confirmar cambios
-$ dbl commit -m "Add last_login tracking"
-✓ Capa L001 creada
-
-# 7. Aplicar a DB principal
-$ dbl sandbox apply
-✓ Cambios aplicados a myapp
-```
-
----
-
-## Comparación con Otras Herramientas
-
-| Característica | DBL | Flyway | Liquibase | Rails Migrations |
-|---------------|-----|--------|-----------|------------------|
-| Control de versiones | ✅ | ✅ | ✅ | ✅ |
-| Modo sandbox | ✅ | ❌ | ❌ | ❌ |
-| Ramificación | ✅ | ❌ | ❌ | ❌ |
-| Detección automática | ✅ | ❌ | ❌ | ❌ |
-| Validación de patrones | ✅ | Limitado | Limitado | ❌ |
-| Listo para producción | ⚠️ Alfa | ✅ | ✅ | ✅ |
-
----
-
-## Conceptos Clave
-
-### Capas (Layers)
-Cambios de esquema versionados. Cada capa = una migración SQL.
-
-### Sandbox
-Base de datos temporal para pruebas seguras.
-
-### Ramas (Branches)
-Líneas paralelas de desarrollo de esquema (como ramas de Git).
-
-### Manifest
-Registro de todas las ramas, capas y su historia.
-
----
-
-## Recursos
-
-- 📖 [Documentación Completa](commands/index.md)
-- 🚀 [Tutorial de Inicio Rápido](getting-started/quick-start.md)
-- 💡 [Mejores Prácticas](guide/best-practices.md)
-- ❓ [Preguntas Frecuentes](../reference/faq.md)
-- 📝 [Changelog](../changelog.md)
-
----
-
-## Advertencias Importantes
-
-!!! warning "Software Alfa"
-    DBL está en desarrollo alfa. **No lo uses en producción** sin respaldos completos.
-
-!!! danger "Pérdida de Datos"
-    DBL puede ELIMINAR bases de datos y tablas. Siempre usa sandboxes y mantén respaldos.
-
-!!! info "Revisión Requerida"
-    DBL genera SQL, pero TÚ debes revisarlo antes de confirmar. Puede producir operaciones destructivas.
-
----
-
-## Comunidad y Soporte
-
-- 🐛 [Reportar Bugs](https://github.com/alann-estrada-KSH/dbl-sandbox/issues)
-- 💬 [Discusiones](https://github.com/alann-estrada-KSH/dbl-sandbox/discussions)
-- 📧 Contacto: [Abrir Issue](https://github.com/alann-estrada-KSH/dbl-sandbox/issues/new)
+- 🐛 [Reportar bugs](https://github.com/alann-estrada-KSH/dbl-sandbox/issues)
+- 💡 [Sugerir features](https://github.com/alann-estrada-KSH/dbl-sandbox/discussions)
+- 📚 [Mejorar documentación](https://github.com/alann-estrada-KSH/dbl-sandbox)
+- 💻 [Enviar código](https://github.com/alann-estrada-KSH/dbl-sandbox/pulls)
 
 ---
 
 ## Licencia
 
-DBL está licenciado bajo [Apache License 2.0](https://github.com/alann-estrada-KSH/dbl-sandbox/blob/master/LICENSE).
+DBL está licenciado bajo **Apache 2.0**. Ver [LICENSE](../LICENSE) para detalles.
 
 ---
 
-## Próximos Pasos
+## Soporte
 
-1. 📥 [Instalar DBL](getting-started/installation.md)
-2. 🏃 [Tutorial de Inicio Rápido](getting-started/quick-start.md)
-3. 📚 [Explorar Comandos](commands/index.md)
-4. 🎯 [Aprender Mejores Prácticas](guide/best-practices.md)
+- 🐙 **GitHub**: [alann-estrada-KSH/dbl-sandbox](https://github.com/alann-estrada-KSH/dbl-sandbox)
+- 📝 **Issues**: [Reporta un bug](https://github.com/alann-estrada-KSH/dbl-sandbox/issues)
+- 💬 **Discussions**: [Haz una pregunta](https://github.com/alann-estrada-KSH/dbl-sandbox/discussions)
+
+---
+
+Hecho con ❤️ por [Alan Estrada](https://github.com/alann-estrada-KSH)

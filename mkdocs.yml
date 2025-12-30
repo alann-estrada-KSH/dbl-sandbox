@@ -107,31 +107,48 @@ nav:
     - Changelog: changelog.md
   
   - Contributing: contributing.md
-  
-  - Español:
-    - Inicio: es/index.md
-    - Comenzar:
-      - Instalación: es/getting-started/installation.md
-      - Inicio Rápido: es/getting-started/quick-start.md
-      - Tu Primera Migración: es/getting-started/first-migration.md
-    - Comandos:
-      - Resumen: es/commands/index.md
-      - Configuración:
-        - init: es/commands/setup/init.md
-      - Sandbox:
-        - sandbox start: es/commands/sandbox/start.md
-      - Gestión de Cambios:
-        - diff: es/commands/changes/diff.md
-        - commit: es/commands/changes/commit.md
-    - Guía de Usuario:
-      - Configuración: es/guide/configuration.md
-      - Mejores Prácticas: es/guide/best-practices.md
 
 plugins:
   - search:
       lang:
         - en
         - es
+  - i18n:
+      docs_structure: folder
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: en
+          default: true
+          name: English
+          build: true
+        - locale: es
+          name: Español
+          build: true
+          nav_translations:
+            Home: Inicio
+            Getting Started: Comenzar
+            Installation: Instalación
+            Quick Start: Inicio Rápido
+            Your First Migration: Tu Primera Migración
+            Commands: Comandos
+            Overview: Resumen
+            Setup Commands: Comandos de Configuración
+            Sandbox Commands: Comandos de Sandbox
+            Change Management: Gestión de Cambios
+            Branching: Ramificación
+            History & Inspection: Historial e Inspección
+            Validation: Validación
+            User Guide: Guía de Usuario
+            Configuration: Configuración
+            Best Practices: Mejores Prácticas
+            Architecture: Arquitectura
+            Database Engines: Motores de Base de Datos
+            Reference: Referencia
+            Troubleshooting: Solución de Problemas
+            Changelog: Registro de Cambios
+            Contributing: Contribuir
 
 extra:
   social:
@@ -139,8 +156,8 @@ extra:
       link: https://github.com/alann-estrada-KSH
   alternate:
     - name: English
-      link: /
+      link: /dbl-sandbox/
       lang: en
     - name: Español
-      link: /es/
+      link: /dbl-sandbox/es/
       lang: es

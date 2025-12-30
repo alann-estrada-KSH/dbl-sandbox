@@ -3,3 +3,8 @@
 
 # YAML configuration parsing
 PyYAML>=6.0
+
+# Documentation dependencies
+mkdocs-material==9.5.3
+pymdown-extensions==10.5
+mkdocs-static-i18n==1.2.0

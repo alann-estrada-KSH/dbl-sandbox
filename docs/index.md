@@ -1,83 +1,73 @@
 # DBL - Database Layering
 
-<div align="center">
-
-![Version](https://img.shields.io/badge/version-0.0.1--alpha-blue)
-![Status](https://img.shields.io/badge/status-experimental-orange)
-![Python](https://img.shields.io/badge/python-3.8+-green)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+![Version](https://img.shields.io/badge/version-0.0.1--alpha-blue) ![Status](https://img.shields.io/badge/status-experimental-orange) ![Python](https://img.shields.io/badge/python-3.8+-green) ![License](https://img.shields.io/badge/license-Apache%202.0-blue)
 
 **Git-like version control for databases**
-
-[Getting Started](getting-started.md) · [Commands](commands.md) · [Architecture](architecture.md) · [Changelog](changelog.md)
-
-</div>
 
 ---
 
 ## What is DBL?
 
-DBL (Database Layering) is a **lightweight CLI tool** that brings Git-like workflows to database schema evolution:
+DBL (Database Layering) is a **version control system for databases**, similar to Git but designed specifically for database schema evolution.
 
-- 🌿 **Branch your schema** - Work on multiple features in parallel
-- 🔒 **Sandbox experiments** - Test changes without breaking your database
-- 📦 **Layer your changes** - Version control for SQL migrations
-- ✅ **Validate patterns** - Automated checks for safe migrations
-- 🔄 **Replay changes** - Deterministic database rebuilds
+### Key Capabilities
+
+- **🌿 Branch your schema** - Work on multiple features in parallel
+- **🔒 Sandbox testing** - Experiment safely without affecting your database
+- **📦 Layer your changes** - Version control for all SQL migrations
+- **✅ Validated migrations** - Built-in checks for safe changes
+- **🔄 Reproducible rebuilds** - Deterministic database reconstruction
 
 ---
 
 ## Quick Start
 
 ```bash
-# Initialize project
+# 1. Initialize project
 dbl init
 
-# Create sandbox
+# 2. Create development sandbox
 dbl sandbox start
 
-# Make your changes in your database...
+# 3. Make your changes
+# Use your favorite database client to modify schema
 
-# Commit changes
+# 4. Save your changes
 dbl commit -m "Add user_preferences table"
 
-# Apply changes
+# 5. Apply to main database
 dbl sandbox apply
 ```
 
 ---
 
-## Key Features
+## Core Features
 
-### 🛡️ Safe Experimentation
-Work in a **sandbox mode** that clones your database, allowing you to test changes without risk.
+### Safe Experimentation with Sandboxes
 
-### 📚 Layer History
-Every change is saved as a **layer** (like a git commit), creating a complete history of your database evolution.
+Work in an isolated **sandbox** - a temporary copy of your database where you can test changes without any risk to production or development databases.
 
-### 🌿 Branching
-Create **branches** to work on different features simultaneously, just like git branches.
+### Complete Layer History
 
-### 🔍 Smart Validation
-Automatically detects risky operations:
-- Uncommented DROP statements
-- Missing backfill operations
-- Type changes without data migration
-- Mixed schema/data changes
+Every change is saved as a numbered **layer** (like Git commits), creating a complete, auditable history of your database evolution. View the history anytime with `dbl log`.
 
-### 🔄 Three-Phase Migrations
-Follows best practices with:
-1. **Expand** - Add new structures (safe)
-2. **Backfill** - Migrate data (optional)
-3. **Contract** - Remove old structures (careful)
+### Git-like Branching
 
----
+Create **branches** for different features:
 
-## Supported Databases
+```bash
+dbl branch create feature/authentication
+dbl checkout feature/authentication
+# ... make your changes ...
+dbl checkout main
+dbl merge feature/authentication
+```
 
-- ✅ PostgreSQL (9.6+)
-- ✅ MySQL (5.7+)
-- 🚧 SQLite (planned)
+### Supported Databases
+
+- ✅ **PostgreSQL** 11+
+- ✅ **MySQL** 5.7+
+- 🔄 **SQLite** (planned)
 - 🚧 MariaDB (planned)
 
 ---
@@ -86,142 +76,164 @@ Follows best practices with:
 
 ### Prerequisites
 
-- Python 3.8+
-- Database CLI tools:
-  - PostgreSQL: `psql`, `pg_dump`
-  - MySQL: `mysql`, `mysqldump`
+---
 
-### Install
+## Installation
+
+Install DBL with pip:
 
 ```bash
-# Clone repository
+pip install dbl
+```
+
+Or clone from GitHub for development:
+
+```bash
 git clone https://github.com/alann-estrada-KSH/dbl-sandbox.git
 cd dbl-sandbox
-
-# Install dependencies
-pip install pyyaml
-
-# Make executable (Unix/Linux/Mac)
-chmod +x dbl.py
-
-# Run
-./dbl.py version
+pip install -e .
 ```
 
 ---
 
-## Documentation
+## Learn More
 
-- [Getting Started Guide](getting-started.md)
-- [Command Reference](commands.md)
-- [Architecture Overview](architecture.md)
-- [Migration Patterns](patterns.md)
-- [Best Practices](best-practices.md)
-- [Changelog](changelog.md)
+### Getting Started
+
+New to DBL? Start here:
+
+- [Installation Guide](getting-started/installation.md) - Detailed setup instructions
+- [Quick Start Tutorial](getting-started/quick-start.md) - Your first changes in 5 minutes
+- [First Migration](getting-started/first-migration.md) - Complete step-by-step example
+
+### Reference
+
+Need help with a specific command?
+
+- [All Commands](commands/index.md) - Complete command reference
+- [Sandbox Management](commands/sandbox/start.md) - Work with sandboxes
+- [Branching Guide](commands/branching/index.md) - Branch management
+
+### Deep Dives
+
+Learn architecture and patterns:
+
+- [Architecture Overview](architecture/overview.md) - How DBL works
+- [Supported Databases](architecture/engines.md) - PostgreSQL, MySQL, more
+- [Best Practices](guide/best-practices.md) - Tips for teams and projects
+- [Configuration](guide/configuration.md) - Advanced setup options
+
+### Help & Resources
+
+- [FAQ](reference/faq.md) - 40+ common questions answered
+- [Troubleshooting](reference/troubleshooting.md) - Fix common issues
+- [Changelog](changelog.md) - Version history and changes
 
 ---
 
-## Example Workflow
+## Common Workflows
+
+### Adding a New Feature
 
 ```bash
-# 1. Initialize project
-dbl init
+# Create feature branch
+dbl branch create feature/payments
 
-# 2. Import existing database
-dbl import snapshot.sql
+# Switch to feature branch
+dbl checkout feature/payments
 
-# 3. Create feature branch
-dbl branch feature/add-auth
-
-# 4. Start sandbox
+# Create sandbox
 dbl sandbox start
 
-# 5. Make schema changes in your database
-# ... use your favorite DB client ...
+# Make schema changes using your DB client
+# ... CREATE TABLE payments ...
+# ... CREATE INDEX idx_payments ...
 
-# 6. Review changes
+# Review changes
 dbl diff
 
-# 7. Commit layer
-dbl commit -m "Add authentication tables"
+# Save changes
+dbl commit -m "Add payments table with indexes"
 
-# 8. Apply changes
+# Apply to feature branch database
 dbl sandbox apply
 
-# 9. Merge to master
-dbl checkout master
-dbl merge feature/add-auth
+# Switch back to main
+dbl checkout main
+
+# Merge changes
+dbl merge feature/payments
+```
+
+### Testing Migrations
+
+```bash
+# Test in a clean environment
+dbl sandbox start
+
+# Rebuild database from all layers
+dbl reset
+
+# Run your application tests
+./run-tests.sh
+
+# Verify schema matches expected
+dbl validate
+
+# Deploy when ready
+dbl sandbox apply
 ```
 
 ---
 
-## Comparison with Other Tools
+## Why DBL?
 
-| Feature | DBL | Flyway | Liquibase | Rails Migrations |
-|---------|-----|--------|-----------|------------------|
-| Git-like branching | ✅ | ❌ | ❌ | ❌ |
-| Sandbox testing | ✅ | ❌ | ❌ | ❌ |
-| Schema inspection | ✅ | ❌ | ✅ | ✅ |
-| Migration validation | ✅ | ⚠️ | ⚠️ | ⚠️ |
-| Production-ready | ❌ | ✅ | ✅ | ✅ |
+### Unlike Raw SQL Scripts
 
-**Note**: DBL complements, doesn't replace production migration tools.
+- ✅ Version controlled with Git
+- ✅ No manual migration ordering
+- ✅ Safe sandbox testing
+- ✅ Complete audit trail
 
----
+### Unlike ORM Migrations (Alembic, Django)
 
-## Warnings ⚠️
+- ✅ Database-agnostic (PostgreSQL, MySQL, SQLite)
+- ✅ Pure SQL - no framework dependency
+- ✅ Portable between projects
+- ✅ Works with any programming language
 
-This is **alpha software**. Use only in development:
+### Unlike Migration Tools (Flyway, Liquibase)
 
-- ⚠️ Can drop databases and delete data
-- ⚠️ Generates SQL that may be destructive
-- ⚠️ Not suitable for production deployments
-- ⚠️ Always backup before using
+- ✅ Git-like branching for parallel work
+- ✅ Sandbox for safe testing
+- ✅ Simple YAML configuration
+- ✅ Easy to learn and use
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](contributing.md).
+We welcome contributions! Here are some ways to help:
+
+- 🐛 [Report bugs](https://github.com/alann-estrada-KSH/dbl-sandbox/issues)
+- 💡 [Suggest features](https://github.com/alann-estrada-KSH/dbl-sandbox/discussions)
+- 📚 [Improve documentation](https://github.com/alann-estrada-KSH/dbl-sandbox)
+- 💻 [Submit code](https://github.com/alann-estrada-KSH/dbl-sandbox/pulls)
 
 ---
 
 ## License
 
-MIT License - see [LICENSE](../LICENSE) for details.
+DBL is licensed under **Apache 2.0**. See [LICENSE](../LICENSE) for details.
 
 ---
 
-## Roadmap
+## Support
 
-### v0.1.0 (Next)
-- [ ] SQLite support
-- [ ] Migration squashing
-- [ ] Diff visualization
-- [ ] Config validation
-
-### v0.2.0
-- [ ] Remote sync (git-like push/pull)
-- [ ] Team collaboration features
-- [ ] Migration testing framework
-
-### v1.0.0
-- [ ] Production hardening
-- [ ] Full documentation
-- [ ] CI/CD integration examples
+- 🐙 **GitHub**: [alann-estrada-KSH/dbl-sandbox](https://github.com/alann-estrada-KSH/dbl-sandbox)
+- 📝 **Issues**: [Report a bug](https://github.com/alann-estrada-KSH/dbl-sandbox/issues)
+- 💬 **Discussions**: [Ask a question](https://github.com/alann-estrada-KSH/dbl-sandbox/discussions)
 
 ---
 
-## Community
-
-- 📝 [Report Issues](https://github.com/alann-estrada-KSH/dbl-sandbox/issues)
-- 💬 [Discussions](https://github.com/alann-estrada-KSH/dbl-sandbox/discussions)
-- 🐦 Follow updates: [@alann-estrada-KSH](https://github.com/alann-estrada-KSH)
-
----
-
-<div align="center">
-
-**Made with ❤️ by [Alan Estrada](https://github.com/alann-estrada-KSH)**
-
-</div>
+Made with ❤️ by [Alan Estrada](https://github.com/alann-estrada-KSH)
