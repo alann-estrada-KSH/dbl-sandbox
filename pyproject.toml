@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "Apache-2.0"}
 authors = [
-    {name = "Alan Estrada", email = ""},
+    {name = "Alan Estrada", email = "alannnn.estrada@gmail.com"},
 ]
 keywords = ["database", "version-control", "migrations", "git", "schema", "postgresql", "mysql"]
 classifiers = [
