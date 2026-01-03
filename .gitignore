@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .dbl/
 scripts/
+.env
+dbl_sandbox.egg-info/*
