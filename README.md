@@ -45,9 +45,61 @@ Quick links:
 
 ---
 
-## What DBL is NOT
+## 🚀 Installation
 
-⚠️ **Important Disclaimers:**
+### From Source (Development)
+```bash
+git clone https://github.com/alann-estrada-KSH/dbl-sandbox.git
+cd dbl-sandbox
+pip install -e .
+```
+
+### From PyPI (when available)
+```bash
+pip install dbl
+```
+
+### Pre-built Binaries
+
+Download the latest release from [GitHub Releases](https://github.com/alann-estrada-KSH/dbl-sandbox/releases):
+
+- **Windows:** `dbl-v0.0.1-alpha.exe`
+- **Linux:** `dbl-v0.0.1-alpha.deb`
+- **macOS:** `dbl-v0.0.1-alpha.dmg`
+
+### Building from Source
+
+To create distributable packages:
+
+```bash
+python build.py
+```
+
+This will generate:
+- Python wheel (`.whl`) for pip installation
+- Platform-specific binaries (`.exe`, `.deb`, `.dmg`)
+
+## 🔄 Updates
+
+### Automatic Updates
+
+Run the update script to check for and install new versions:
+
+```bash
+python update.py
+```
+
+### Manual Updates
+
+1. Check for new releases on [GitHub](https://github.com/alann-estrada-KSH/dbl-sandbox/releases)
+2. Download the appropriate file for your system
+3. Install:
+   - `.whl`: `pip install --upgrade dbl-*.whl`
+   - `.exe`: Replace your current `dbl.exe`
+   - `.deb`: `sudo dpkg -i dbl-*.deb`
+   - `.dmg`: Install the DMG package
+
+---
 
 - **NOT a replacement for migration frameworks** like Flyway, Liquibase, or Rails migrations. DBL complements them; it doesn't replace them.
 - **NOT production-ready**. This is alpha software. Expect bugs, breaking changes, and missing features.
