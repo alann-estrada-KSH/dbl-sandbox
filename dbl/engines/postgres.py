@@ -9,7 +9,7 @@ class PostgresEngine(DBEngine):
     """PostgreSQL database engine implementation"""
     
     def _docker_prefix(self):
-        return f"docker exec -i {self.container} " if self.is_docker else ""
+        return f"docker exec {self.container} " if self.is_docker else ""
     
     def _auth_env(self):
         env = os.environ.copy()
@@ -77,13 +77,7 @@ class PostgresEngine(DBEngine):
         return f'{self.get_base_cmd(db_name)} -t -A -c "{query}"'
 
     def inspect_db(self, db_name):
-        query = """
-            SELECT table_name, column_name, data_type, is_nullable, column_default,
-                   character_maximum_length, numeric_precision, numeric_scale
-            FROM information_schema.columns 
-            WHERE table_schema = 'public' 
-            ORDER BY table_name, ordinal_position;
-        """
+        query = "SELECT table_name, column_name, data_type, is_nullable, column_default, character_maximum_length, numeric_precision, numeric_scale FROM information_schema.columns WHERE table_schema = 'public' ORDER BY table_name, ordinal_position;"
         cmd = f'{self.get_base_cmd(db_name)} -t -A -F "|" -c "{query}"'
         out = run_command(cmd, capture=True, env=self._auth_env())
         

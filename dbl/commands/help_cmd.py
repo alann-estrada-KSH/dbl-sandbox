@@ -13,6 +13,7 @@ def cmd_version(args):
 def cmd_help(args):
     """Show help information"""
     log("Available commands:", "info")
+    print("  -v, --version                         (Show version and exit)")
     print("  init                                  (Initialize DBL project)")
     print("  import <file>                         (Import SQL snapshot)")
     print("  sandbox                               (Create/manage safe sandbox)")

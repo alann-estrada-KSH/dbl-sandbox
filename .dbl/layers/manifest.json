@@ -1,0 +1,26 @@
+{
+  "current": "master",
+  "branches": {
+    "master": [
+      {
+        "file": "f1.sql"
+      }
+    ],
+    "feature": [
+      {
+        "file": "f1.sql"
+      }
+    ],
+    "feature/payment": [
+      {
+        "file": "f1.sql"
+      }
+    ]
+  },
+  "_metadata": {
+    "feature/payment": {
+      "parent": "master",
+      "created_at": "2026-01-07T14:50:50.993681"
+    }
+  }
+}

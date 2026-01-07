@@ -1,0 +1,14 @@
+container_name: ''
+db_name: myapp
+engine: postgres
+host: localhost
+ignore_tables:
+- migrations
+- failed_jobs
+- sessions
+password: password
+policies:
+  allow_drop_column: false
+  allow_drop_table: false
+port: 5432
+user: postgres

@@ -95,7 +95,8 @@ def cmd_merge(args):
     for l in new_layers:
         log(f"Applying {l['file']}", "info")
         path = os.path.join(LAYERS_DIR, l['file'])
-        run_command(f"cat {path} | {engine.get_base_cmd(db)}", 
+        cat_cmd = "type" if os.name == 'nt' else "cat"
+        run_command(f"{cat_cmd} {path} | {engine.get_base_cmd(db)}", 
                    env=engine._auth_env() if isinstance(engine, PostgresEngine) else None)
         m['branches'][curr].append(l)
     

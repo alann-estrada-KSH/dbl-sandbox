@@ -40,6 +40,15 @@ class CustomParser(argparse.ArgumentParser):
 def main():
     """Main entry point"""
     parser = CustomParser(description="DBL - Database Layering")
+    parser.add_argument(
+        "-v", "--version",
+        action="version",
+        version=(
+            f"DBL (Database Layering) v{VERSION}\n"
+            "Repository: https://github.com/alann-estrada-KSH/dbl-sandbox"
+        ),
+        help="Show version information and exit"
+    )
     sub = parser.add_subparsers(dest="cmd", required=True)
     
     # Basic commands

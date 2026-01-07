@@ -3,6 +3,7 @@
 import os
 import json
 import hashlib
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from .constants import STATE_FILE, SANDBOX_META_FILE
 from .utils import log, run_command
 from .errors import DBLError
@@ -17,6 +18,37 @@ def get_target_db(config):
             meta = json.load(f)
         log(f"🛡️  Sandbox Active (Backup: {meta['backup_db']})", "warn")
     return config['db_name'], is_sandbox
+
+
+def _process_table(engine, db_name, table, config):
+    """Process a single table to compute its data hash"""
+    try:
+        pk_cols = engine.get_primary_keys(db_name, table)
+        if not pk_cols:
+            try:
+                data_raw = engine.dump_table_data(db_name, table)
+                if data_raw:
+                    normalized = '\n'.join(line.strip() for line in data_raw.splitlines() if line.strip())
+                    hash_val = hashlib.md5(normalized.encode('utf-8')).hexdigest()
+                    return table, hash_val, table, None
+                else:
+                    return table, "empty", table, None
+            except Exception as e:
+                return table, "read_error", table, f"{table} (fallback failed)"
+        
+        order_by = ', '.join(pk_cols) if pk_cols else '1'
+        query = f'SELECT * FROM {table} ORDER BY {order_by}'
+        cmd = engine.execute_query(db_name, query)
+        data_raw = run_command(cmd, capture=True, 
+                              env=engine._auth_env() if isinstance(engine, PostgresEngine) else None)
+        
+        # Normalize data before hashing (strip whitespace, normalize newlines)
+        normalized = '\n'.join(line.strip() for line in data_raw.splitlines() if line.strip())
+        hash_val = hashlib.md5(normalized.encode('utf-8')).hexdigest()
+        return table, hash_val, None, None
+        
+    except Exception as e:
+        return table, "read_error", None, f"{table} ({str(e)[:50]})"
 
 
 def get_state(engine, db_name, config, filter_tables=None):
@@ -62,43 +94,27 @@ def get_state(engine, db_name, config, filter_tables=None):
     
     from .utils import log_progress, clear_progress
     
-    for idx, table in enumerate(track_tables, 1):
-        # Show progress bar (truncate table name)
-        table_display = table if len(table) <= 30 else table[:27] + "..."
-        log_progress(idx, len(track_tables), "tables", f"- {table_display}")
+    # Use multithreading for table processing
+    max_workers = min(8, len(track_tables)) if track_tables else 1  # Limit to 8 workers max
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(_process_table, engine, db_name, table, config): table for table in track_tables}
         
-        try:
-            pk_cols = engine.get_primary_keys(db_name, table)
-            if not pk_cols:
-                tables_without_pk.append(table)
-                # Fallback: use dump_table_data for tables without PK
-                try:
-                    data_raw = engine.dump_table_data(db_name, table)
-                    if data_raw:
-                        normalized = '\n'.join(line.strip() for line in data_raw.splitlines() if line.strip())
-                        hash_val = hashlib.md5(normalized.encode('utf-8')).hexdigest()
-                        data_hashes[table] = hash_val
-                    else:
-                        data_hashes[table] = "empty"
-                except Exception as e:
-                    tables_with_errors.append(f"{table} (fallback failed)")
-                    data_hashes[table] = "read_error"
-                continue
-                
-            order_by = ', '.join(pk_cols) if pk_cols else '1'
-            query = f'SELECT * FROM {table} ORDER BY {order_by}'
-            cmd = engine.execute_query(db_name, query)
-            data_raw = run_command(cmd, capture=True, 
-                                  env=engine._auth_env() if isinstance(engine, PostgresEngine) else None)
+        for idx, future in enumerate(as_completed(futures), 1):
+            table = futures[future]
+            # Show progress bar (truncate table name)
+            table_display = table if len(table) <= 30 else table[:27] + "..."
+            log_progress(idx, len(track_tables), "tables", f"- {table_display}")
             
-            # Normalize data before hashing (strip whitespace, normalize newlines)
-            normalized = '\n'.join(line.strip() for line in data_raw.splitlines() if line.strip())
-            hash_val = hashlib.md5(normalized.encode('utf-8')).hexdigest()
-            data_hashes[table] = hash_val
-            
-        except Exception as e:
-            tables_with_errors.append(f"{table} ({str(e)[:50]})")
-            data_hashes[table] = "read_error"
+            try:
+                result_table, hash_val, pk_issue, error = future.result()
+                data_hashes[result_table] = hash_val
+                if pk_issue:
+                    tables_without_pk.append(pk_issue)
+                if error:
+                    tables_with_errors.append(error)
+            except Exception as e:
+                tables_with_errors.append(f"{table} (thread error: {str(e)[:50]})")
+                data_hashes[table] = "read_error"
     
     # Clear progress line and show summary
     clear_progress()

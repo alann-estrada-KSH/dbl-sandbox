@@ -1,11 +1,14 @@
-container_name: dbl_demo_pg
+container_name: 'dbl_demo_pg'
 db_name: myapp
 engine: postgres
 host: localhost
 ignore_tables:
-  - failed_jobs
-  - migrations
-  - cache
+- migrations
+- failed_jobs
+- sessions
 password: pass
+policies:
+  allow_drop_column: false
+  allow_drop_table: false
 port: 5432
 user: admin

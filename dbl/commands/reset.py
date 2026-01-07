@@ -25,12 +25,14 @@ def cmd_reset(args):
     engine.create_db(db)
     
     if os.path.exists(SNAPSHOT_FILE):
-        run_command(f"cat {SNAPSHOT_FILE} | {engine.get_base_cmd(db)}", 
+        cat_cmd = "type" if os.name == 'nt' else "cat"
+        run_command(f"{cat_cmd} {SNAPSHOT_FILE} | {engine.get_base_cmd(db)}", 
                    env=engine._auth_env() if isinstance(engine, PostgresEngine) else None)
         
     for l in m['branches'][m['current']]:
         path = os.path.join(LAYERS_DIR, l['file'])
-        run_command(f"cat {path} | {engine.get_base_cmd(db)}", 
+        cat_cmd = "type" if os.name == 'nt' else "cat"
+        run_command(f"{cat_cmd} {path} | {engine.get_base_cmd(db)}", 
                    env=engine._auth_env() if isinstance(engine, PostgresEngine) else None)
     
     log("State restored.", "success")

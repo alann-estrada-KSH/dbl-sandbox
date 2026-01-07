@@ -23,12 +23,15 @@ def cmd_log(args):
     
     # Show in reverse order (most recent first)
     for i, layer in enumerate(reversed(layers[-limit:])):
-        if oneline:
-            layer_hash = hashlib.md5(layer['file'].encode()).hexdigest()[:7]
-            print(f"{layer_hash} {layer['msg']}")
-        else:
-            log(f"Layer: {layer['file']}", "branch")
-            log(f"  Message: {layer['msg']}", "info")
+        try:
+            if oneline:
+                layer_hash = hashlib.md5(layer['file'].encode()).hexdigest()[:7]
+                print(f"{layer_hash} {layer.get('msg', 'No message')}")
+            else:
+                log(f"Layer: {layer['file']}", "branch")
+                log(f"  Message: {layer.get('msg', 'No message')}", "info")
+        except KeyError as e:
+            log(f"Error accessing layer data: {e}", "error")
 
 
 def cmd_rev_parse(args):
